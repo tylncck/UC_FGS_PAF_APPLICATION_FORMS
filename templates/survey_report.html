@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Preliminary Assessment Form (PAF) Report</title>
+    <style>
+        /* Define Landscape Page Properties and Margins */
+        @page {
+            size: letter landscape;
+            margin: 0.6in;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: Arial, sans-serif;
+                font-size: 9pt;
+                color: #7f8c8d;
+            }
+        }
+        
+        /* Global Reset & Typography */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #2c3e50;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        /* Top Header Area */
+        .header-container {
+            border-bottom: 4px solid #ffcd00;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .meta-info {
+            font-size: 9pt;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        /* Visual Legend Section */
+        .legend-container {
+            display: flex;
+            background-color: #fcfcfc;
+            border: 1px solid #eaeded;
+            border-radius: 4px;
+            padding: 10px 15px;
+            margin-bottom: 25px;
+            font-size: 9pt;
+            page-break-inside: avoid;
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-right: 20px;
+            align-self: center;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 25px;
+        }
+
+        .legend-color-bar {
+            width: 12px;
+            height: 15px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .bar-red {
+            background-color: #c0392b;
+        }
+
+        .bar-orange {
+            background-color: #ff671f;
+        }
+
+        .bar-green {
+            background-color: #47a67c;
+        }
+
+        .legend-text {
+            color: #5d6d7e;
+        }
+
+        /* 2-Column DW Page Grid System */
+        .dw-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .dw-card {
+            width: 32%; /* Creates a clean 3-column distribution */
+            box-sizing: border-box;
+            page-break-inside: avoid;
+        }
+
+        /* 1. Descriptive Section Blocks (type: DB) - Red Left Border */
+        .db-section {
+            background-color: #f8f9fa;
+            border-left: 4px solid #c0392b;
+            padding: 12px 15px;
+            margin: 25px 0 15px 0;
+            page-break-inside: avoid;
+        }
+
+        /* Force page break before survey data if DW data is present */
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* 2. Question Blocks - Orange Left Border */
+        .question-block {
+            background-color: #fdfefe;
+            border-left: 4px solid #ff671f;
+            padding: 10px 15px;
+            margin: 20px 0 0 0;
+            page-break-inside: avoid;
+        }
+
+        .question-text {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* 3. Answer Blocks - Green Left Border */
+        .answer-block {
+            background-color: #ffffff;
+            border-left: 4px solid #47a67c;
+            padding: 10px 15px;
+            margin: 0 0 25px 0;
+            page-break-inside: avoid;
+        }
+
+        /* Clean Neutral Typography for Accessibility (No Green/Red Text) */
+        .answer-text {
+            color: #2c3e50;
+            white-space: pre-wrap;
+        }
+
+        .answer-list {
+            margin: 5px 0;
+            padding-left: 20px;
+            color: #2c3e50;
+        }
+
+        .answer-list li {
+            margin-bottom: 4px;
+        }
+
+        /* Side-by-Side Matrix Tables (type: SBS) */
+        .sbs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 0 0;
+            font-size: 10pt;
+        }
+
+        .sbs-table th {
+            background-color: #34495e;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #2c3e50;
+        }
+
+        .sbs-table td {
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            vertical-align: top;
+            color: #2c3e50;
+        }
+
+        .sbs-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>Preliminary Assessment Form (PAF)</h1>
+        <div class="meta-info">
+            <strong>Response ID:</strong> {{ response_id }}<br>
+            <strong>Export Date:</strong> 2026-07-16
+        </div>
+    </div>
+
+    <!-- Document Style Legend -->
+    <div class="legend-container">
+        <div class="legend-title">Document Legend:</div>
+        <div class="legend-item">
+            <div class="legend-color-bar bar-red"></div>
+            <span class="legend-text"><strong>Section Headings & Explanations</strong></span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color-bar bar-orange"></div>
+            <span class="legend-text"><strong>Questions & Data Labels</strong></span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color-bar bar-green"></div>
+            <span class="legend-text"><strong>Answers & Data</strong></span>
+        </div>
+    </div>
+
+    <!-- PAGE 1: Data Warehouse Elements in a 3-Column Layout -->
+    {% if dw_elements %}
+        <div class="dw-first-page">
+            <!-- DW Section Header (Reverted older style) -->
+            {% for item in dw_elements %}
+                {% if item.type == 'DB' and item.is_dw_header %}
+                    <div class="db-section">
+                        <strong>{{ item.text }}</strong>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <!-- DW 2-Column Row Elements Container -->
+            <div class="dw-grid">
+                {% for item in dw_elements %}
+                    {% if item.type == 'TE' %}
+                        <div class="dw-card">
+                            <div class="question-block" style="margin-top: 0;">
+                                <div class="question-text">{{ item.text }}</div>
+                            </div>
+                            <div class="answer-block">
+                                <div class="answer-text">{{ item.answer }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- PAGE 2 (or PAGE 1 if no DW data exists): Student Survey Responses -->
+    <div class="{% if dw_elements %}page-break{% endif %}">
+        {% for item in parsed_elements %}
+            
+            <!-- Descriptive Header Blocks (DB) -->
+            {% if item.type == 'DB' %}
+                <div class="db-section">
+                    {{ item.text }}
+                </div>
+            
+            <!-- Side-by-Side Table Matrix (SBS) -->
+            {% elif item.type == 'SBS' %}
+                <div class="question-block">
+                    <div class="question-text">{{ item.text }}</div>
+                </div>
+                <div class="answer-block">
+                    <table class="sbs-table">
+                        <thead>
+                            <tr>
+                                <th>Entry</th>
+                                {% for col_title in item.headers %}
+                                    <th>{{ col_title }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row_id, columns in item.rows.items() %}
+                                <tr>
+                                    <td><strong>#{{ row_id }}</strong></td>
+                                    {% for col_title in item.headers %}
+                                        <td>{{ columns.get(col_title, '') }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            <!-- Multiple Choice Question Block (MC) -->
+            {% elif item.type == 'MC' %}
+                <div class="question-block">
+                    <div class="question-text">{{ item.text }}</div>
+                </div>
+                <div class="answer-block">
+                    {% if item.is_list %}
+                        <ul class="answer-list">
+                            {% for label in item.answer %}
+                                <li>{{ label }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="answer-text">{{ item.answer }}</div>
+                    {% endif %}
+                </div>
+
+            <!-- Text Entry Block (TE) -->
+            {% elif item.type == 'TE' %}
+                <div class="question-block">
+                    <div class="question-text">{{ item.text }}</div>
+                </div>
+                <div class="answer-block">
+                    {% if item.is_composite %}
+                        <ul class="answer-list">
+                            {% for sub_lbl, sub_val in item.answer.items() %}
+                                <li><strong>{{ sub_lbl }}:</strong> {{ sub_val }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="answer-text">{{ item.answer }}</div>
+                    {% endif %}
+                </div>
+
+            {% endif %}
+
+        {% endfor %}
+    </div>
+
+</body>
+</html>
