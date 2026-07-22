@@ -1,93 +1,120 @@
-# fgs_paf_application_forms
+# Qualtrics PAF Application Processor
+An automated, survey-agnostic Python pipeline designed to extract Qualtrics survey submissions, dynamically map metadata, validate student records against an internal Data Warehouse, and render standardized PDF application forms.
 
+## Project Metadata
+- **Author:** Taylan Cicek
+- **Role:** Lead, Data Analytics & Reporting - Faculty of Graduate Studies
+- **Date:** July 2026 
 
+## Project Overview
+The Qualtrics PAF Application Processor automates the end-to-end reporting flow for program application forms (PAFs). By dynamically resolving human-readable question labels (such as UCID prompts and field exclusion lists) into exact Qualtrics Question IDs (QID), the system eliminates hardcoded keys and operates seamlessly across annual survey updates. The pipeline securely connects to the Qualtrics API, queries student data from the Data Warehouse, and uses HTML/CSS templating to generate clean, print-ready PDF reports.
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://git.ucalgary.ca/fgs-analytics/fgs_paf_application_forms.git
-git branch -M main
-git push -uf origin main
+## Cloning the Repository
+To clone the repository using HTTPS, open your terminal, navigate to your project folder and run the following commands in your terminal:
+``` bash
+git clone https://git.ucalgary.ca/fgs-analytics/fgs_paf_application_forms.git
 ```
 
-## Integrate with your tools
+## Setup & Prerequisites
+Before running the application, ensure all dependencies, environment configurations, and network permissions are properly set up.
 
-- [ ] [Set up project integrations](https://git.ucalgary.ca/fgs-analytics/fgs_paf_application_forms/-/settings/integrations)
+### 1. Environment
+Create and activate a Python virtual environment:
+``` bash
+python -m venv .venv
+```
 
-## Collaborate with your team
+Activate the virtual environment: 
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+**macOS / Linux:**
+``` bash
+source .venv/bin/activate
+```
+**Windows:**
+``` bash
+.\.venv\Scripts\activate
+```
 
-## Test and Deploy
+**Upgrade pip**
+``` bash
+pip install --upgrade pip
+```
 
-Use the built-in continuous integration in GitLab.
+### 2. WeasyPrint Installation
+This project utilizes WeasyPrint for HTML-to-PDF rendering. WeasyPrint requires system-level C libraries (Pango, GObject, and Cairo) to be installed on your machine.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**macOS (via Homebrew):**
+``` bash
+brew install python pango libffi
+```
 
-***
+**Ubuntu / Debian:**
+``` bash
+sudo apt-get update
+sudo apt-get install build-essential python3-dev python3-pip python3-setuptools python3-wheel python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+```
 
-# Editing this README
+**Windows:**
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- **Step 1: Install MSYS2**
 
-## Suggestions for a good README
+    Visit [weasyprint web page](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#windows) to see the installation steps for Windows. 
+    - Install [MSYS2](https://www.msys2.org/#installation) keeping the default options.
+    - After installation, in MSYS2’s shell, execute `pacman -S mingw-w64-x86_64-pango`. When prompted to confirm the installation, type `Y` and press Enter.
+    - Close MSYS2’s shell. 
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- **Step 2: Add MSYS2 to your Windows Environment Path**
+    
+    To let your normal Python/Jupyter environment find these libraries:
+    - Press the Windows Key and search for "Environment Variables" (or choose "Edit the system environment variables").
+    - Click the Environment Variables... button at the bottom.
+    - In the "User variables" (or "System variables") box, find the variable named Path (or PATH), select it, and click Edit....
+    - Click New and add this exact path where MSYS2 installed the library binaries: `C:\msys64\ucrt64\bin`
+    - Click OK on all windows to save the changes.
 
-## Name
-Choose a self-explaining name for your project.
+- **Step 3: Verify the Setup**
+    
+    In your terminal run `python -m pip install weasyprint` to install the package and `python -m weasyprint --info` to check if installation is successful.
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+### 3. Dependecies
+Run the following command in your terminal to install package dependencies:
+``` bash
+pip install -r requirements.txt
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 4. Qualtrics API Credentials & Survey ID
+You will need an active Qualtrics OAuth client or API key with permissions to read survey metadata and responses.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+**How to Obtain Qualtrics API Credentials:**
+- Log in to your Qualtrics account.
+- Navigate to Account Settings (top right icon) $\rightarrow$ Qualtrics IDs.
+- Under User Settings, you will see ther Datacenter ID. 
+- Under OAuth Client Manager, generate a new Client ID and Client Secret.
+    - While generating new Client ID and Client Secret, make sure you select all read:.... items (especially read:survey_responses) in the Scopes area.   
+- Locate your Survey ID (surveyId=SV_...) from the survey URL or the Surveys section inside Qualtrics IDs.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+You will need to paste these data into the appropriate places in the [Jupyter Notebook](/notebooks/PAF_PDF_Generation.ipynb). 
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### 5. Administrative VPN & Data Warehouse Server Access
+To fetch student records (check_dw=True), your environment must have network connectivity to the internal Data Warehouse server.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Network Requirement: You must be connected to the Administrative UC Networks VPN prior to executing the script, if you have check_dw=True in your class initialization. 
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+**Default Server & Database Configuration:** Server hostnames and database names are defined directly as class constants inside PAFApplicationForms (e.g., SERVER and DATABASE).
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+**Custom Configurations:** If you need to point to a staging/test database server or update target endpoints, update these class constants directly inside the source code or override them prior to execution.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+## Class Overview & Use Cases
+### PAFApplicationForms Orchestrator
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+The main class, `PAFApplicationForms`, acts as an orchestrator managing API setup, metadata resolution, query execution, and PDF rendering.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+#### Core Capabilities:
+- **Dynamic QID Mapping:** Resolves readable question labels (e.g., "UCID#:") into internal QIDs automatically.
+- **Question Exclusions:** Hides specific survey sections or sensitive questions by passing exact question texts in exclude_questions.
+- **Database Integration:** Executes custom .sql queries against the Data Warehouse to append verified student attributes to survey outputs.
+- **Strict Validation:** Incorporates layered type-checking, input guardrails, and file path assertions to ensure robust error handling.
 
-## License
-For open source projects, say how it is licensed.
+#### Use Case 
+Please refer to the [PAF_PDF_Generation.ipynb](/notebooks/PAF_PDF_Generation.ipynb) notebook for the use case.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
