@@ -1,0 +1,13 @@
+data/
+pdf_reports/
+~$*..xls
+~$*..csv
+~$*..xlsx
+~$*..pdf
+.~lock.*
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.vscode/
+.idea/
